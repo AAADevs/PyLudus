@@ -5,4 +5,3 @@ django-widget-tweaks==1.4.8
 fusionauth-client==1.23.0
 dateparser==1.0.0
 pkce~=1.0.3
-loguru~=0.5.3

@@ -150,4 +150,32 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-LOG_FILE = pathlib.Path("log/pyludus_site.log")
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': (
+                '%(asctime)s | %(process)d:%(thread)d | %(module)s | %(levelname)-8s | %(message)s'
+            )
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': os.environ.get(
+                'LOG_LEVEL',
+                # If there is no explicit `LOG_LEVEL` set,
+                # use `DEBUG` if we're running in debug mode
+                # Use `ERROR` if we're not running in debug mode
+                'INFO' if DEBUG else 'ERROR'
+            )
+        }
+    }
+}

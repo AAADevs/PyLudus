@@ -134,3 +134,6 @@ Pipfile*
 # Linting Files
 .pre-commit-config.yaml
 .flake8
+
+# Static files
+static/

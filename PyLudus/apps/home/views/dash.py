@@ -1,5 +1,6 @@
+import logging
+
 import dateparser
-from loguru import logger
 
 from PyLudus.apps.home.views import get_login_url, is_user_login_ok
 from django.conf import settings
@@ -8,6 +9,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View
 from fusionauth.fusionauth_client import FusionAuthClient
+
+logger = logging.getLogger(__name__)
 
 
 class DashView(View):
