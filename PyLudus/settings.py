@@ -174,7 +174,7 @@ LOGGING = {
                 # If there is no explicit `LOG_LEVEL` set,
                 # use `DEBUG` if we're running in debug mode
                 # Use `ERROR` if we're not running in debug mode
-                'INFO' if DEBUG else 'ERROR'
+                'ERROR' if DEBUG else 'ERROR'
             )
         }
     }
