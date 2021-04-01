@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import logging
 import os
-import pathlib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -150,7 +149,20 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-LOGGING = {
+# Logging Configuration
+
+# Clear prev config
+LOGGING_CONFIG = None
+
+LOG_LEVEL = os.environ.get(
+                'LOG_LEVEL',
+                # If there is no explicit `LOG_LEVEL` set,
+                # use `DEBUG` if we're running in debug mode
+                # Use `ERROR` if we're not running in debug mode
+                'ERROR' if DEBUG else 'ERROR'
+            )
+
+logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -162,20 +174,15 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'class': 'logging.StreamHandler'
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         }
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'propagate': True,
-            'level': os.environ.get(
-                'LOG_LEVEL',
-                # If there is no explicit `LOG_LEVEL` set,
-                # use `DEBUG` if we're running in debug mode
-                # Use `ERROR` if we're not running in debug mode
-                'ERROR' if DEBUG else 'ERROR'
-            )
+            'level': LOG_LEVEL
         }
     }
-}
+})
