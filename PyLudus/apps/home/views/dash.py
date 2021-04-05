@@ -41,7 +41,7 @@ class DashView(View):
             else:
                 logger.info("couldn't get user")
                 logger.info(r.error_response)
-            logger.info("render dashboard with ", user_id)
+            logger.info(f"render dashboard with {user_id}")
         except Exception as e:
             logger.error(f"Error occurred while communicating with Fusion API: {e}")
             return redirect(login_url)
@@ -99,7 +99,7 @@ class DashView(View):
                     },
                 )
         except Exception as e:
-            logger.error(e)
+            logger.critical(e)
             return render(
                 request,
                 "home/dash.html",
