@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import logging
 import os
 from pathlib import Path
 
@@ -151,3 +151,48 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# Logging Configuration
+
+# Clear prev config
+LOGGING_CONFIG = None
+
+LOG_LEVEL = os.environ.get(
+                'LOG_LEVEL',
+                # If there is no explicit `LOG_LEVEL` set,
+                # use `DEBUG` if we're running in debug mode
+                # Use `INFO` if we're not running in debug mode
+                logging.DEBUG if DEBUG else logging.INFO
+            )
+
+LOG_LEVEL = logging.DEBUG if DEBUG else logging.INFO
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': (
+                '%(asctime)s | %(process)d:%(thread)d | %(module)s | %(levelname)-8s | %(message)s'
+            )
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'ERROR'
+        },
+        'PyLudus': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': LOG_LEVEL
+        }
+    }
+}
+logging.config.dictConfig(LOGGING)

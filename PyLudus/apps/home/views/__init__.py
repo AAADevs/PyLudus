@@ -6,6 +6,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from fusionauth.fusionauth_client import FusionAuthClient
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_or_create_user(user_id: int, request: HttpRequest) -> Any:
@@ -45,22 +48,22 @@ def get_login_url(request: HttpRequest) -> str:
 
 def is_user_login_ok(request: HttpRequest) -> Optional[str]:
     """Checks if the user is login was successful or not."""
-    print("starting login")
+    logger.debug("starting login")
     client = FusionAuthClient(
         settings.FUSION_AUTH_API_KEY, settings.FUSION_AUTH_INTERNAL_API_URL
     )
 
     code = request.GET.get("code")
-    print(f"{code=}")
+    logger.debug(f"{code=}")
 
     if not code:
-        print("no code")
+        logger.debug("no code")
         return False
 
     try:
         # redirect_url = request.build_absolute_uri(reverse("dash"))
         redirect_url = settings.LOGIN_REDIRECT_URL
-        print(f"{redirect_url=}")
+        logger.info(f"{redirect_url=}")
         # if you are using version 1.19.x of the python library or later, use this
         r = client.exchange_o_auth_code_for_access_token_using_pkce(
             code,
@@ -70,15 +73,15 @@ def is_user_login_ok(request: HttpRequest) -> Optional[str]:
             client_secret=settings.FUSION_AUTH_CLIENT_SECRET,
         )
         was_successful = r.was_successful()
-        print(f"{was_successful=}")
+        logger.info(f"{was_successful=}")
         if was_successful:
             # access_token = r.success_response["access_token"]
             user_id = r.success_response["userId"]
             get_or_create_user(user_id, request)
             return user_id
         else:
-            print(r.error_response)
+            logger.error(r.error_response)
             return False
 
     except Exception as exc:
-        print(f"{exc=}")
+        logger.critical(f"{exc=}")
