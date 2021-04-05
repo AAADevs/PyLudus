@@ -158,11 +158,12 @@ LOG_LEVEL = os.environ.get(
                 'LOG_LEVEL',
                 # If there is no explicit `LOG_LEVEL` set,
                 # use `DEBUG` if we're running in debug mode
-                # Use `ERROR` if we're not running in debug mode
-                'ERROR' if DEBUG else 'ERROR'
+                # Use `INFO` if we're not running in debug mode
+                logging.DEBUG if DEBUG else logging.INFO
             )
 
-logging.config.dictConfig({
+LOG_LEVEL = logging.DEBUG if DEBUG else logging.INFO
+LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -182,7 +183,13 @@ logging.config.dictConfig({
         'django': {
             'handlers': ['console'],
             'propagate': True,
+            'level': 'ERROR'
+        },
+        'PyLudus': {
+            'handlers': ['console'],
+            'propagate': True,
             'level': LOG_LEVEL
         }
     }
-})
+}
+logging.config.dictConfig(LOGGING)
